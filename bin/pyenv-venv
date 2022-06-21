@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#
+# Summary: Create and Activate local venv for current Python version
+#
+# Usage: pyenv venv [<venv_dir>]
+#
+# Like `python -m venv <venv_dir>` and `. <venv_dir>/bin/activate`.
+
+create_venv() {
+  if [[ ! -d $1 ]]
+  then
+    echo Creating venv $1 \(`python --version`\)
+    python -m venv $1
+  fi
+}
+
+activate_venv() {
+  local readonly venv_dir=${1:-venv}
+
+  create_venv $venv_dir
+
+  echo Activating venv. Use \`exit\` instead of \`deactivate\`.
+  . $venv_dir/bin/activate
+  exec "$SHELL"
+}
+
+if [[ -z $VIRTUAL_ENV ]]
+then
+  activate_venv
+else
+  echo Already active $VIRTUAL_ENV \(`python --version`\)
+fi
